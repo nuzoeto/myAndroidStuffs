@@ -1,0 +1,21 @@
+su -c '
+if ! pm compile -a -f -m speed-profile; then
+    echo "Compilation with speed-profile failed."
+fi
+
+if ! pm compile -a -f --compile-layouts; then
+    echo "First compile attempt with --compile-layouts failed. Trying with compile-layouts..."
+    
+    if ! pm compile -a -f compile-layouts; then
+        echo "Continuing after compile error: Must specify exactly one of compilation filter or Unknown option"
+    fi
+    
+    if ! pm bg-dexopt-job; then
+        echo "Continuing after bg-dexopt-job error"
+    fi
+else
+    if ! pm bg-dexopt-job; then
+        echo "Continuing after bg-dexopt-job error"
+    fi
+fi
+'
